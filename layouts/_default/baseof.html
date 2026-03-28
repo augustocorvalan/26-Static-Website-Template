@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="{{ site.Language.LanguageCode }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} | {{ site.Title }}{{ end }}</title>
+
+    {{- with .Description }}
+    <meta name="description" content="{{ . }}" />
+    {{- else }}{{- with site.Params.description }}
+    <meta name="description" content="{{ . }}" />
+    {{- end }}{{- end }}
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} | {{ site.Title }}{{ end }}" />
+    <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}" />
+    <meta property="og:url" content="{{ .Permalink }}" />
+    {{- with .Description }}
+    <meta property="og:description" content="{{ . }}" />
+    {{- else }}{{- with site.Params.description }}
+    <meta property="og:description" content="{{ . }}" />
+    {{- end }}{{- end }}
+    {{- with site.Params.og_image }}
+    <meta property="og:image" content="{{ . }}" />
+    {{- end }}
+
+    <!-- RSS and alternate output formats -->
+    {{ range .AlternativeOutputFormats -}}
+    <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink | safeURL }}" />
+    {{ end -}}
+
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <nav>
+      {{- if site.Params.showHomeInNav }}
+      <a href="{{ site.Home.Permalink }}">{{ site.Home.Title }}</a>
+      {{- end }}
+      {{- range site.RegularPages }}
+      {{- if .Parent.IsHome }}
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+      {{- end }}
+      {{- end }}
+    </nav>
+
+    <main>
+      {{ block "main" . }}{{ end }}
+    </main>
+
+    <script src="/js/main.js"></script>
+  </body>
+</html>
